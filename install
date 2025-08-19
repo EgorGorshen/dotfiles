@@ -1,0 +1,160 @@
+#!/usr/bin/env python3
+# TODO: make installer run just onse
+# TODO: check sequence
+from pathlib import Path
+
+import argparse
+import threading
+import time
+import subprocess
+import logging
+import os
+import stat
+import shutil
+import sys
+
+
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
+SCRIPT_PATH = Path(__file__).parent.resolve()
+CACHE_HOME = Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache"))
+CACHE_HOME.mkdir(parents=True, exist_ok=True)
+
+SCRIPTS_DIR = SCRIPT_PATH / "scripts"
+APPS = [p.name for p in SCRIPTS_DIR.iterdir()] if SCRIPTS_DIR.exists() else []
+
+
+def arguments():
+    parser = argparse.ArgumentParser(description="CLI app to setup arch linux")
+    parser.add_argument(
+        "--install",
+        "-i",
+        nargs="+",
+        choices=APPS if APPS else None,
+        default=None,
+        help="Choose which script to run",
+    )
+    parser.add_argument(
+        "--paru",
+        "-p",
+        action="store_true",
+        help="Installing just paru, run without sudo!!!",
+    )
+    return parser
+
+
+def run_script_with_spinner(script_path, env_path):
+    spinner_chars = ["|", "/", "-", "\\"]
+    proc = subprocess.Popen(
+        [str(script_path), str(env_path)],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+
+    idx = 0
+    while proc.poll() is None:
+        char = spinner_chars[idx % len(spinner_chars)]
+        sys.stdout.write(f"\rRunning {script_path}... {char}")
+        sys.stdout.flush()
+        idx += 1
+        time.sleep(0.1)
+    sys.stdout.flush()
+    sys.stdout.write(f"\r")
+
+    stdout, stderr = proc.communicate()
+    return proc.returncode, stdout, stderr
+
+
+def install_paru():
+    if shutil.which("paru"):
+        return True
+
+    pacman_cmd = ["pacman", "-S", "--needed", "--noconfirm", "base-devel", "git"]
+    if os.geteuid() != 0:
+        pacman_cmd = ["sudo"] + pacman_cmd
+
+    res = subprocess.run(pacman_cmd, capture_output=True, text=True)
+    if res.returncode != 0:
+        logging.fatal("pacman failed: %s", (res.stderr or res.stdout or "").strip())
+        sys.exit(1)
+
+    paru_source = CACHE_HOME / "paru"
+    if not paru_source.exists():
+        res = subprocess.run(
+            ["git", "clone", "https://aur.archlinux.org/paru.git", str(paru_source)],
+            capture_output=True,
+            text=True,
+        )
+        if res.returncode != 0:
+            logging.fatal(
+                "could not clone paru: %s", (res.stderr or res.stdout or "").strip()
+            )
+            sys.exit(1)
+
+    logging.info("start building paru")
+    res = subprocess.run(
+        ["makepkg", "-si", "--noconfirm"],
+        cwd=str(paru_source),
+        capture_output=True,
+        text=True,
+    )
+    if res.returncode != 0:
+        logging.fatal(
+            "error while building paru: %s", (res.stderr or res.stdout or "").strip()
+        )
+        sys.exit(1)
+
+
+def main():
+    args = arguments().parse_args()
+
+    if args.paru:
+        if shutil.which("paru"):
+            logging.info("`paru` allredy installed")
+        elif os.geteuid() != 0:
+            insatll_paru()
+        else:
+            logging.fatal("RUN `--paru` without sudo")
+            exit(1)
+        return
+
+    if not shutil.which("paru"):
+        logging.fatal("first of all install paru `./install -p`")
+        exit(1)
+
+    if args.install is None:
+        args.install = APPS
+
+    install_paru()
+    errors = {}
+
+    for app in args.install:
+        script_path = SCRIPT_PATH / "scripts" / app
+        if not script_path.exists():
+            logging.warning(f"File not found: `{script_path}`")
+            errors[app] = "file not found"
+            continue
+
+        if not os.access(script_path, os.X_OK):
+            logging.warning(f"`{str(script_path)}` has no permissions to run")
+            script_path.chmod(os.stat(script_path).st_mode | stat.S_IXUSR)
+            logging.info(f"Add permissions to file `{str(script_path)}`")
+
+        retcode, out, err = run_script_with_spinner(script_path, SCRIPT_PATH / "env")
+        if retcode != 0:
+            logging.warning(f"PROBLEMS WITH: {script_path}")
+            msg = (err or out or "").strip()
+            errors[app] = msg if msg else "unknown error"
+        else:
+            logging.info(f"DONE: {script_path}")
+
+    for app in errors:
+        msg = errors[app]
+        logging.error("PROBLEM WITH %s:\n\n\t%s\n", app, "\n\t".join(msg.splitlines()))
+
+
+if __name__ == "__main__":
+    main()

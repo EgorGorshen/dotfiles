@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+CONFIG_PATH="$1/nvim"
+paru -S neovim --noconfirm
+
+if [ -d "$XDG_CONFIG_HOME/nvim" ]; then
+    rm -rf $XDG_CONFIG_HOME/nvim 
+fi
+
+ln -s $CONFIG_PATH $XDG_CONFIG_HOME/nvim 
