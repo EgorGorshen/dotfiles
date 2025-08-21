@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+
+# CARGO ---------------------- start ----------------------
+if command -v cagro >/dev/null 2>&1; then
+    $1/scripts/rust $1    
+fi
+
+cargo update
+if ! cargo install --list | grep -q "^cargo-update v"; then
+    cargo install cargo-update
+fi
+
+cargo install-update exa ripgrep
+# CARGO ----------------------- end ------------------------

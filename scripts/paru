@@ -1,0 +1,31 @@
+#!/usr/bin/env sh
+
+if command -v paru >/dev/null 2>&1; then
+    exit 0
+fi
+
+sudo pacman -S --needed --noconfirm base-devel git
+
+if [[ $? -ne 0 ]]; then
+    fatal "could not dowload pkg to build paru"
+fi
+
+if [[ -n $XDG_CASHE_HOME ]]; then
+    PARU_PATH=$XDG_CASHE_HOME/paru
+else
+    PARU_PATH=$HOME/.cashe/paru
+fi
+
+if [ ! -f $PARU_PATH ]; then 
+    info "dowloading paru $PARU_PATH"
+    git clone https://aur.archlinux.org/paru.git $PARU_PATH
+    if [[ $? -ne 0 ]]; then
+        fatal "could not dowload paru source code"
+    fi
+fi
+
+info "start build ing paru"
+cd $PARU_PATH && makepkg -si --noconfirm
+if [[ $? -ne 0 ]]; then
+    fatal "could not build paru ;..("
+fi

@@ -30,7 +30,10 @@ $ sudo ./insatall
 
 ### WATING
 
-- `hyperland`
+- `hyperland`:
+    - `wdg` change wallpapers
+    - `rofi` window menu
+    - `waybar`
 - `firefox`
 - `firewall`
 - `vpn`

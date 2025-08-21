@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+for file in "$1/bin/*"; do
+    chmod +x $file
+    echo "[INFO] script $file get +x permitions" 
+done
+
+rm -rf $XDG_DATA_HOME/bin
+ln -s $1/bin $XDG_DATA_HOME/bin

@@ -1,0 +1,25 @@
+#!/usr/bin/env sh
+# TODO: copy config from .config/hypr to dotfile/env
+# TODO: wa can make for loop
+
+# NOTE: configure hyperland
+rm -rf $XDG_CONFIG_HOME/hypr 
+ln -s "$1/env/hypr" $XDG_CONFIG_HOME/hypr 
+hyprctl reload
+
+# NOTE: move wallpapers to data files
+paru -S --noconfirm hyperpaper
+mkdir -p "$XDG_DATA_HOME/wallpapers"
+cp -v $1/data/wallpapers/* "$XDG_DATA_HOME/wallpapers/"
+
+# NOTE: install rofi
+paru -S --noconfirm rofi-wayland
+rm -rf $XDG_CONFIG_HOME/rofi
+ln -s "$1/env/rofi" $XDG_CONFIG_HOME/rofi
+
+
+# NOTE: install way bar
+paru -S --noconfirm waybar
+rm -rf $XDG_CONFIG_HOME/waybar
+ln -s "$1/env/waybar" $XDG_CONFIG_HOME/waybar
+
