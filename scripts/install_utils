@@ -1,6 +1,5 @@
 #!/usr/bin/env sh
 
-# CARGO ---------------------- start ----------------------
 if command -v cagro >/dev/null 2>&1; then
     $1/scripts/rust $1    
 fi
@@ -10,5 +9,8 @@ if ! cargo install --list | grep -q "^cargo-update v"; then
     cargo install cargo-update
 fi
 
+# CARGO ----------------------------------------------------
 cargo install-update exa ripgrep
-# CARGO ----------------------- end ------------------------
+
+# PARU -----------------------------------------------------
+paru -S --noconfirm brightnessctl

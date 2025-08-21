@@ -9,8 +9,8 @@ hyprctl reload
 
 # NOTE: move wallpapers to data files
 paru -S --noconfirm hyperpaper
-mkdir -p "$XDG_DATA_HOME/wallpapers"
-cp -v $1/data/wallpapers/* "$XDG_DATA_HOME/wallpapers/"
+rm -rf $XDG_DATA_HOME/wallpapers
+ln -s "$1/data/wallpapers" "$XDG_DATA_HOME/wallpapers"
 
 # NOTE: install rofi
 paru -S --noconfirm rofi-wayland
