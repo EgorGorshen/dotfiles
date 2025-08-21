@@ -19,7 +19,7 @@ ln -s "$1/env/rofi" $XDG_CONFIG_HOME/rofi
 
 
 # NOTE: install way bar
-paru -S --noconfirm waybar
+paru -S --noconfirm waybar ttf-nerd-fonts-symbols ttf-nerd-fonts-symbols-mono
 rm -rf $XDG_CONFIG_HOME/waybar
 ln -s "$1/env/waybar" $XDG_CONFIG_HOME/waybar
 
