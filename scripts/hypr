@@ -1,5 +1,4 @@
 #!/usr/bin/env sh
-# TODO: copy config from .config/hypr to dotfile/env
 # TODO: wa can make for loop
 
 # NOTE: configure hyperland

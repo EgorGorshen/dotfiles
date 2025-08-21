@@ -14,3 +14,6 @@ cargo install-update exa ripgrep
 
 # PARU -----------------------------------------------------
 paru -S --noconfirm brightnessctl
+paru -S --noconfirm fzf
+
+
