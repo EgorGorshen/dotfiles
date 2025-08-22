@@ -3,4 +3,4 @@
 paru -S --noconfirm tmux
 rm -rf $HOME/.tmux.conf
 rm -rf $XDG_CONFIG_HOME/tmux
-ln -s "$1/env/tmux" "$XDG_CONFIG_HOME/tmux"
+ln -s "$1/env/tmux/.tmux.conf" "$HOME/.tmux.conf"

@@ -15,6 +15,7 @@
       // TODO: create your own pomodor timer
     // "custom/pomodoro",
     "bluetooth",
+    "memory",
     "network",
     "pulseaudio", 
     "backlight",
@@ -54,7 +55,7 @@
   },
 
   "clock": {
-    "timezone": "Asia/Kolkata",
+    "timezone": "Europ/Moscow",
     "tooltip": false,
     "format": "{:%H:%M:%S  -  %A, %d}",
     "interval": 1

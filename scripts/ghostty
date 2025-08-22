@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+paru -S --noconfirm ghossty
+rm -rf $XDG_CONFIG_HOME/ghostty
+ln -s "$1/env/ghostty" "$XDG_CONFIG_HOME/ghostty"
