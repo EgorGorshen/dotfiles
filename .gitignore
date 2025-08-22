@@ -1,3 +1,5 @@
 data/*
 .ruff_cashe
 TODO.md
+lazy-lock.json
+
