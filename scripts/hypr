@@ -6,7 +6,7 @@ rm -rf $XDG_CONFIG_HOME/hypr
 ln -s "$1/env/hypr" $XDG_CONFIG_HOME/hypr 
 
 # NOTE: move wallpapers to data files
-paru -S --noconfirm hyperpaper
+paru -S --noconfirm hyperpaper hyprlock
 rm -rf $XDG_DATA_HOME/wallpapers
 ln -s "$1/data/wallpapers" "$XDG_DATA_HOME/wallpapers"
 

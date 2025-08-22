@@ -6,4 +6,5 @@ for file in "$1/bin/*"; do
 done
 
 rm -rf $XDG_DATA_HOME/bin
+# TODO: move to .local/bin || .local/scripts
 ln -s $1/bin $XDG_DATA_HOME/bin
