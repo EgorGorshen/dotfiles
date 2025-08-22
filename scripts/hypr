@@ -4,7 +4,6 @@
 # NOTE: configure hyperland
 rm -rf $XDG_CONFIG_HOME/hypr 
 ln -s "$1/env/hypr" $XDG_CONFIG_HOME/hypr 
-hyprctl reload
 
 # NOTE: move wallpapers to data files
 paru -S --noconfirm hyperpaper
@@ -22,3 +21,5 @@ paru -S --noconfirm waybar ttf-nerd-fonts-symbols ttf-nerd-fonts-symbols-mono
 rm -rf $XDG_CONFIG_HOME/waybar
 ln -s "$1/env/waybar" $XDG_CONFIG_HOME/waybar
 
+hyprctl reload
+pkill waybar && waybar &
