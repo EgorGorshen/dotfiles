@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+# NOTE: install rofi
+paru -S --noconfirm rofi-wayland
+rm -rf $XDG_CONFIG_HOME/rofi
+ln -s "$1/env/rofi" $XDG_CONFIG_HOME/rofi
+
+git clone https://github.com/lr-tech/rofi-themes-collection.git $XDG_CACHE_HOME/rofi-themes
+mkdir -p $XDG_DATA_HOME/rofi/themes
+for theme in $XDG_CACHE_HOME/rofi-themes/themes/*.rasi; do
+    name=$(basename $theme)
+    rm -rf $XDG_DATA_HOME/rofi/themes/$name
+    cp $theme $XDG_DATA_HOME/rofi/themes/$name
+done
+

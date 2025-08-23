@@ -10,12 +10,6 @@ paru -S --noconfirm hyperpaper hyprlock
 rm -rf $XDG_DATA_HOME/wallpapers
 ln -s "$1/data/wallpapers" "$XDG_DATA_HOME/wallpapers"
 
-# NOTE: install rofi
-paru -S --noconfirm rofi-wayland
-rm -rf $XDG_CONFIG_HOME/rofi
-ln -s "$1/env/rofi" $XDG_CONFIG_HOME/rofi
-
-
 # NOTE: install way bar
 paru -S --noconfirm waybar ttf-nerd-fonts-symbols ttf-nerd-fonts-symbols-mono
 rm -rf $XDG_CONFIG_HOME/waybar
